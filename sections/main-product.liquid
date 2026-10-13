@@ -195,7 +195,11 @@
                 {%- when 'description' -%}
                   {%- if product.description != blank -%}
                     <div class="product__description rte quick-add-hidden" {{ block.shopify_attributes }}>
-                      {{ product.description }}
+                      {%- comment -%}
+                        ESW: 11 product descriptions contain their own H1s (legacy Shogun content).
+                        Demote them so the product title stays the page's only H1 (SPEC 5.3, 7.2).
+                      {%- endcomment -%}
+                      {{ product.description | replace: '<h1', '<h2' | replace: '</h1>', '</h2>' }}
                     </div>
                   {%- endif -%}
                 {%- when 'sku' -%}
