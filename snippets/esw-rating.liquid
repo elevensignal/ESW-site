@@ -1,0 +1,48 @@
+{% comment %}
+  Star rating + review count from the standard Shopify review metafields
+  (reviews.rating, reviews.rating_count), which Yotpo keeps in sync. Product
+  JSON-LD reads the same metafields, so the visible widget and schema match.
+
+  Accepts:
+  - product: {Object} Product
+  - link: {String} Optional href, e.g. '#reviews'
+
+  Usage:
+  {% render 'esw-rating', product: product, link: '#reviews' %}
+{% endcomment %}
+{%- assign rating = product.metafields.reviews.rating.value -%}
+{%- assign count = product.metafields.reviews.rating_count.value | default: 0 -%}
+{%- if rating != blank and count > 0 -%}
+  {%- liquid
+    assign rating_decimal = 0
+    assign decimal = rating.rating | modulo: 1
+    if decimal >= 0.3 and decimal <= 0.7
+      assign rating_decimal = 0.5
+    elsif decimal > 0.7
+      assign rating_decimal = 1
+    endif
+    assign rounded = rating.rating | round: 1
+  -%}
+  {%- capture inner -%}
+    <span
+      class="rating-star"
+      aria-hidden="true"
+      style="--rating: {{ rating.rating | floor }}; --rating-max: {{ rating.scale_max }}; --rating-decimal: {{ rating_decimal }};"
+    ></span>
+    <span class="visually-hidden">
+      {{- 'esw.product.rating_label' | t: rating: rounded, max: rating.scale_max -}}
+    </span>
+    <span class="esw-rating__count">
+      {%- if count == 1 -%}
+        {{ 'esw.product.reviews_count.one' | t: count: count }}
+      {%- else -%}
+        {{ 'esw.product.reviews_count.other' | t: count: count }}
+      {%- endif -%}
+    </span>
+  {%- endcapture -%}
+  {%- if link != blank -%}
+    <a class="esw-rating rating" href="{{ link }}">{{ inner }}</a>
+  {%- else -%}
+    <p class="esw-rating rating">{{ inner }}</p>
+  {%- endif -%}
+{%- endif -%}

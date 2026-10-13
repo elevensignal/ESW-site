@@ -58,6 +58,8 @@
     <script src="{{ 'details-modal.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'standard-actions-override.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'esw.js' | asset_url }}" defer="defer"></script>
 
     {%- if settings.animations_reveal_on_scroll -%}
       <script src="{{ 'animations.js' | asset_url }}" defer="defer"></script>
@@ -76,7 +78,27 @@
       {{ body_font_bold | font_face: font_display: 'swap' }}
       {{ body_font_italic | font_face: font_display: 'swap' }}
       {{ body_font_bold_italic | font_face: font_display: 'swap' }}
-      {{ settings.type_header_font | font_face: font_display: 'swap' }}
+      {%- if settings.esw_gelica_enabled -%}
+        {%- comment -%} Licensed Gelica files are uploaded by ESW (SPEC 14, question 2). {%- endcomment -%}
+        {%- comment -%}theme-check-disable MissingAsset{%- endcomment -%}
+        @font-face {
+          font-family: 'Gelica';
+          src: url('{{ 'gelica-medium.woff2' | asset_url }}') format('woff2');
+          font-weight: 500;
+          font-style: normal;
+          font-display: swap;
+        }
+        @font-face {
+          font-family: 'Gelica';
+          src: url('{{ 'gelica-regular.woff2' | asset_url }}') format('woff2');
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+        }
+        {%- comment -%}theme-check-enable MissingAsset{%- endcomment -%}
+      {%- else -%}
+        {{ settings.type_header_font | font_face: font_display: 'swap' }}
+      {%- endif -%}
 
       {% for scheme in settings.color_schemes -%}
         {% assign scheme_classes = scheme_classes | append: ', .color-' | append: scheme.id %}
@@ -129,9 +151,15 @@
         --font-body-weight: {{ settings.type_body_font.weight }};
         --font-body-weight-bold: {{ settings.type_body_font.weight | plus: 300 | at_most: 1000 }};
 
+        {%- if settings.esw_gelica_enabled %}
+        --font-heading-family: 'Gelica', Georgia, serif;
+        --font-heading-style: normal;
+        --font-heading-weight: 500;
+        {%- else %}
         --font-heading-family: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
         --font-heading-style: {{ settings.type_header_font.style }};
         --font-heading-weight: {{ settings.type_header_font.weight }};
+        {%- endif %}
 
         --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
         --font-heading-scale: {{ settings.heading_scale | times: 1.0 | divided_by: settings.body_scale }};
@@ -294,11 +322,16 @@
       <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
       {% comment %}theme-check-enable AssetPreload{% endcomment %}
     {%- endunless -%}
-    {%- unless settings.type_header_font.system? -%}
+    {%- if settings.esw_gelica_enabled -%}
+      {% comment %}theme-check-disable AssetPreload, MissingAsset{% endcomment %}
+      {%- comment -%} Only the weight used above the fold (hero H1) is preloaded. {%- endcomment -%}
+      <link rel="preload" as="font" href="{{ 'gelica-medium.woff2' | asset_url }}" type="font/woff2" crossorigin>
+      {% comment %}theme-check-enable AssetPreload, MissingAsset{% endcomment %}
+    {%- elsif settings.type_header_font.system? == false -%}
       {% comment %}theme-check-disable AssetPreload{% endcomment %}
       <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
       {% comment %}theme-check-enable AssetPreload{% endcomment %}
-    {%- endunless -%}
+    {%- endif -%}
 
     {%- if localization.available_countries.size > 1 or localization.available_languages.size > 1 -%}
       {{ 'component-localization-form.css' | asset_url | stylesheet_tag: preload: true }}
@@ -357,6 +390,11 @@
         cart_update_url: '{{ routes.cart_update_url }}',
         cart_url: '{{ routes.cart_url }}',
         predictive_search_url: '{{ routes.predictive_search_url }}',
+      };
+
+      window.eswSettings = {
+        freeShippingThreshold: {{ settings.free_shipping_threshold | default: 0 | times: 100 | json }},
+        moneyFormat: {{ shop.money_format | json }},
       };
 
       window.cartStrings = {

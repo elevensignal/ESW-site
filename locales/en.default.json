@@ -217,6 +217,10 @@
     }
   },
   "templates": {
+    "404": {
+      "title": "Page not found",
+      "subtext": "404"
+    },
     "search": {
       "no_results": "No results found for “{{ terms }}”. Check the spelling or use a different word or phrase.",
       "page": "Page",
@@ -260,10 +264,6 @@
         "post_success": "Thanks for contacting us. We'll get back to you as soon as possible.",
         "error_heading": "Please adjust the following:"
       }
-    },
-    "404": {
-      "title": "Page not found",
-      "subtext": "404"
     }
   },
   "sections": {
@@ -274,7 +274,6 @@
       "announcement": "Announcement",
       "announcement_bar": "Announcement bar"
     },
-
     "header": {
       "announcement": "Announcement",
       "menu": "Menu",
@@ -527,6 +526,51 @@
       "max_characters": "{{ max_chars }} characters max",
       "send_on": "YYYY-MM-DD",
       "send_on_label": "Send on (optional)"
+    }
+  },
+  "esw": {
+    "shipping": {
+      "away_with_gift": "You are [amount] away from free shipping + [gift]",
+      "away": "You are [amount] away from free shipping",
+      "unlocked_with_gift": "Free shipping + [gift] unlocked",
+      "unlocked": "Free shipping unlocked",
+      "progress_label": "Progress toward free shipping"
+    },
+    "announcement": {
+      "with_gift": "Free shipping + [gift] on orders over [amount]",
+      "without_gift": "Free shipping on orders over [amount]"
+    },
+    "product": {
+      "best_for": "Best for [text]",
+      "reviews_count": {
+        "one": "[count] review",
+        "other": "[count] reviews"
+      },
+      "rating_label": "Rated [rating] out of [max]",
+      "choose_options": "Choose options",
+      "breadcrumb": "Breadcrumb",
+      "home": "Home",
+      "purchase_options": "Purchase options",
+      "one_time": "One-time purchase",
+      "subscribe": "Subscribe and save",
+      "save_percent": "Save [percent]%",
+      "deliver_every": "Delivery frequency",
+      "complete_routine": "Complete the routine",
+      "add_both": "Add both",
+      "together": "Together [price]",
+      "key_ingredients": "Key ingredients",
+      "how_to_use": "How to use",
+      "faq": "Questions and answers",
+      "sticky_label": "Quick add to cart"
+    },
+    "badges": {
+      "new": "New",
+      "bestseller": "Bestseller",
+      "set": "Set"
+    },
+    "cart": {
+      "upsell_heading": "Pairs well with",
+      "add": "Add"
     }
   }
 }

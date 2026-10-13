@@ -1,11 +1,55 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Dawn",
-    "theme_version": "16.0.0",
-    "theme_author": "Shopify",
+    "theme_name": "ESW Beauty",
+    "theme_version": "1.0.0",
+    "theme_author": "Eleven Signal + SyncPoint Creative",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://support.shopify.com/"
+  },
+  {
+    "name": "ESW Beauty",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Fonts"
+      },
+      {
+        "type": "checkbox",
+        "id": "esw_gelica_enabled",
+        "label": "Use Gelica for headings",
+        "default": false,
+        "info": "Turn on once the licensed Gelica files (gelica-regular.woff2, gelica-medium.woff2) are uploaded to the theme assets. While off, the Typography heading font is used as a stand-in."
+      },
+      {
+        "type": "header",
+        "content": "Free shipping and gift"
+      },
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free-shipping threshold",
+        "info": "In the store currency. Must match Settings > Shipping and the automatic gift discount. Shown in the announcement bar, PDP and cart drawer.",
+        "default": 35
+      },
+      {
+        "type": "text",
+        "id": "free_gift_label",
+        "label": "Gift unlocked at the threshold",
+        "info": "Used in \"Free shipping + [gift]\". Leave blank if there is no gift tier.",
+        "default": "a free mask"
+      },
+      {
+        "type": "header",
+        "content": "Cart drawer"
+      },
+      {
+        "type": "product",
+        "id": "cart_upsell_product",
+        "label": "Fallback upsell product",
+        "info": "Shown when no cart item has a routine pairing (esw.routine_pair metafield). Pick a bundle."
+      }
+    ]
   },
   {
     "name": "t:settings_schema.logo.name",

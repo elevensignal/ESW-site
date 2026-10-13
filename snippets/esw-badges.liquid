@@ -1,0 +1,23 @@
+{% comment %}
+  Product badges. Exactly three types, driven by product tags (SPEC 3.3, 10):
+  badge:new, badge:bestseller, badge:set. Shows the first match only.
+
+  Usage:
+  {% render 'esw-badges', product: product %}
+{% endcomment %}
+{%- liquid
+  assign badge = blank
+  if product.tags contains 'badge:new'
+    assign badge = 'new'
+    assign label = 'esw.badges.new' | t
+  elsif product.tags contains 'badge:bestseller'
+    assign badge = 'bestseller'
+    assign label = 'esw.badges.bestseller' | t
+  elsif product.tags contains 'badge:set'
+    assign badge = 'set'
+    assign label = 'esw.badges.set' | t
+  endif
+-%}
+{%- if badge != blank -%}
+  <span class="esw-badge esw-badge--{{ badge }}">{{ label }}</span>
+{%- endif -%}

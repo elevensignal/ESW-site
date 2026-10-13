@@ -1,0 +1,58 @@
+{% comment %}
+  Free-shipping progress bar. Threshold comes from settings.free_shipping_threshold,
+  never a hard-coded number (SPEC 6).
+
+  Accepts:
+  - static: {Boolean} Set inside the cart drawer, which re-renders server side on every change.
+
+  Usage:
+  {% render 'esw-free-shipping-bar' %}
+{% endcomment %}
+{%- liquid
+  assign threshold = settings.free_shipping_threshold | default: 0 | times: 100
+  assign remaining = threshold | minus: cart.total_price | at_least: 0
+  assign progress = 100
+  if threshold > 0
+    assign progress = cart.total_price | times: 100 | divided_by: threshold | at_most: 100
+  endif
+  assign gift = settings.free_gift_label | strip
+
+  if gift != blank
+    assign message_away = 'esw.shipping.away_with_gift' | t: gift: gift
+    assign message_unlocked = 'esw.shipping.unlocked_with_gift' | t: gift: gift
+  else
+    assign message_away = 'esw.shipping.away' | t
+    assign message_unlocked = 'esw.shipping.unlocked' | t
+  endif
+-%}
+{%- if threshold > 0 -%}
+  <free-shipping-bar
+    class="esw-shipping-bar{% if remaining == 0 %} is-unlocked{% endif %}"
+    data-threshold="{{ threshold }}"
+    data-message-away="{{ message_away | escape }}"
+    data-message-unlocked="{{ message_unlocked | escape }}"
+    {% if static %}
+      data-static
+    {% endif %}
+  >
+    <p class="esw-shipping-bar__message" data-message role="status">
+      {%- if remaining > 0 -%}
+        {%- assign remaining_money = remaining | money -%}
+        {{ message_away | replace: '[amount]', remaining_money }}
+      {%- else -%}
+        {{ message_unlocked }}
+      {%- endif -%}
+    </p>
+    <div
+      class="esw-shipping-bar__track"
+      role="progressbar"
+      aria-label="{{ 'esw.shipping.progress_label' | t }}"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="{{ progress | round }}"
+      style="--progress: {{ progress | divided_by: 100.0 }};"
+    >
+      <span class="esw-shipping-bar__fill"></span>
+    </div>
+  </free-shipping-bar>
+{%- endif -%}
