@@ -181,8 +181,9 @@
     -%}
 
     {%- if section.settings.logo_position != 'middle-center' -%}
+      {%- comment -%} ESW: logo is never an H1; the homepage hero owns the only H1 (SPEC 7.2). {%- endcomment -%}
       {%- if request.page_type == 'index' -%}
-        <h1 class="header__heading">
+        <div class="header__heading">
       {%- endif -%}
       <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
         {%- if settings.logo != blank -%}
@@ -209,7 +210,7 @@
         {%- endif -%}
       </a>
       {%- if request.page_type == 'index' -%}
-        </h1>
+        </div>
       {%- endif -%}
     {%- endif -%}
 
@@ -224,8 +225,9 @@
     %}
 
     {%- if section.settings.logo_position == 'middle-center' -%}
+      {%- comment -%} ESW: logo is never an H1; the homepage hero owns the only H1 (SPEC 7.2). {%- endcomment -%}
       {%- if request.page_type == 'index' -%}
-        <h1 class="header__heading">
+        <div class="header__heading">
       {%- endif -%}
       <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
         {%- if settings.logo != blank -%}
@@ -252,7 +254,7 @@
         {%- endif -%}
       </a>
       {%- if request.page_type == 'index' -%}
-        </h1>
+        </div>
       {%- endif -%}
     {%- endif -%}
 

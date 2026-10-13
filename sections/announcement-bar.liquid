@@ -12,6 +12,9 @@
   if section.blocks.size > 0
     assign announcement_bar = true
   endif
+
+  # ESW: [threshold] in announcement text reads settings.free_shipping_threshold (SPEC 6).
+  assign threshold_money = settings.free_shipping_threshold | default: 0 | times: 100 | money_without_trailing_zeros
 -%}
 
 {% if social_icons %}
@@ -40,7 +43,7 @@
             >
           {%- endif -%}
           <p class="announcement-bar__message h5">
-            <span>{{ section.blocks.first.settings.text | escape }}</span>
+            <span>{{ section.blocks.first.settings.text | escape | replace: '[threshold]', threshold_money }}</span>
             {%- if section.blocks.first.settings.link != blank -%}
               {{- 'icon-arrow.svg' | inline_asset_content -}}
             {%- endif -%}
@@ -100,8 +103,6 @@
                       >
                     {%- endif -%}
                     <p class="announcement-bar__message h5">
-                      {%- comment -%} ESW: [threshold] reads settings.free_shipping_threshold (SPEC 6). {%- endcomment -%}
-                      {%- assign threshold_money = settings.free_shipping_threshold | default: 0 | times: 100 | money_without_trailing_zeros -%}
                       <span>{{ block.settings.text | escape | replace: '[threshold]', threshold_money }}</span>
                       {%- if block.settings.link != blank -%}
                         {{- 'icon-arrow.svg' | inline_asset_content -}}
