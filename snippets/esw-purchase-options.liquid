@@ -1,0 +1,119 @@
+{% comment %}
+  Subscribe-and-save vs one-time purchase (SPEC 5.3 #5). Works with any
+  subscription app that uses Shopify selling plans. Renders nothing when the
+  product has no selling plans.
+
+  Subscribe is preselected when the product type is in `default_types`
+  (comma-separated, e.g. "Face Mask, Facial Mist, Eye Patches") or the product
+  is tagged `default:subscribe`.
+
+  Accepts:
+  - product: {Object}
+  - product_form_id: {String} id of the product form the selling_plan input belongs to
+  - section_id: {String}
+  - default_types: {String}
+
+  Usage:
+  {% render 'esw-purchase-options', product: product, product_form_id: product_form_id, section_id: section.id, default_types: block.settings.subscribe_default_types %}
+{% endcomment %}
+{%- assign group = product.selling_plan_groups | first -%}
+{%- if group -%}
+  {%- liquid
+    assign variant = product.selected_or_first_available_variant
+    assign type_list = default_types | downcase | split: ','
+    assign product_type = product.type | downcase | strip
+
+    assign default_subscribe = false
+    for item in type_list
+      assign item_clean = item | strip
+      if item_clean != blank and item_clean == product_type
+        assign default_subscribe = true
+      endif
+    endfor
+    if product.tags contains 'default:subscribe' or product.requires_selling_plan
+      assign default_subscribe = true
+    endif
+
+    assign selected_plan = variant.selected_selling_plan_allocation.selling_plan | default: group.selling_plans.first
+    assign plan_allocation = variant.selling_plan_allocations | where: 'selling_plan_group_id', group.id | first
+    for allocation in variant.selling_plan_allocations
+      if allocation.selling_plan.id == selected_plan.id
+        assign plan_allocation = allocation
+      endif
+    endfor
+
+    assign savings = nil
+    assign adjustment = selected_plan.price_adjustments | first
+    if adjustment.value_type == 'percentage' and adjustment.value > 0
+      assign savings = 'esw.product.save_percent' | t: percent: adjustment.value
+    endif
+  -%}
+  <purchase-options class="esw-purchase">
+    <variant-refresh id="PurchaseOptions-{{ section_id }}" data-section="{{ section_id }}">
+      <fieldset class="esw-purchase__fieldset">
+        <legend class="esw-purchase__legend">{{ 'esw.product.purchase_options' | t }}</legend>
+
+        <input
+          type="hidden"
+          name="selling_plan"
+          value="{{ selected_plan.id }}"
+          form="{{ product_form_id }}"
+          {% unless default_subscribe %}
+            disabled
+          {% endunless %}
+        >
+
+        <label class="esw-purchase__option">
+          <input
+            type="radio"
+            name="purchase_type"
+            value="subscribe"
+            {% if default_subscribe %}
+              checked
+            {% endif %}
+          >
+          <span class="esw-purchase__label">
+            {{ 'esw.product.subscribe' | t }}
+            {%- if savings -%}
+              <span class="esw-badge">{{ savings }}</span>
+            {%- endif -%}
+          </span>
+          <span class="esw-purchase__price">{{ plan_allocation.price | money }}</span>
+        </label>
+
+        {%- if group.selling_plans.size > 1 -%}
+          <div class="esw-purchase__frequency">
+            <label class="esw-meta" for="PurchaseFrequency-{{ section_id }}">
+              {{- 'esw.product.deliver_every' | t -}}
+            </label>
+            <div class="select">
+              <select id="PurchaseFrequency-{{ section_id }}" class="select__select" data-frequency name="selling_plan_choice">
+                {%- for plan in group.selling_plans -%}
+                  <option value="{{ plan.id }}" {% if plan.id == selected_plan.id %}selected{% endif %}>
+                    {{- plan.name | escape -}}
+                  </option>
+                {%- endfor -%}
+              </select>
+              <span class="svg-wrapper">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- unless product.requires_selling_plan -%}
+          <label class="esw-purchase__option">
+            <input
+              type="radio"
+              name="purchase_type"
+              value="once"
+              {% unless default_subscribe %}
+                checked
+              {% endunless %}
+            >
+            <span class="esw-purchase__label">{{ 'esw.product.one_time' | t }}</span>
+            <span class="esw-purchase__price">{{ variant.price | money }}</span>
+          </label>
+        {%- endunless -%}
+      </fieldset>
+    </variant-refresh>
+  </purchase-options>
+{%- endif -%}

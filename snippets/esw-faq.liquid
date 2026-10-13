@@ -1,0 +1,41 @@
+{% comment %}
+  FAQ accordion + FAQPage JSON-LD (SPEC 5.3 #10, 5.5, 7.3).
+
+  Accepts:
+  - faqs: {Array} [{ "q": "...", "a": "..." }]
+
+  Usage:
+  {% render 'esw-faq', faqs: product.metafields.esw.faq.value %}
+{% endcomment %}
+{%- if faqs != blank -%}
+  <div class="esw-faq">
+    {%- for faq in faqs -%}
+      <details class="esw-faq__item">
+        <summary class="esw-faq__question">
+          <span>{{ faq.q | escape }}</span>
+          {{- 'icon-caret.svg' | inline_asset_content -}}
+        </summary>
+        <div class="esw-faq__answer">{{ faq.a | escape | newline_to_br }}</div>
+      </details>
+    {%- endfor -%}
+  </div>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {%- for faq in faqs -%}
+          {
+            "@type": "Question",
+            "name": {{ faq.q | strip_html | json }},
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": {{ faq.a | strip_html | json }}
+            }
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+{%- endif -%}

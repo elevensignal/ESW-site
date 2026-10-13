@@ -1,0 +1,91 @@
+{% comment %}
+  Trust strip (SPEC 5.2 #3): rating + review count, then short proof points.
+  The store-wide rating and count read the shop metafields esw.store_rating and
+  esw.review_count (keep them in sync with Yotpo), falling back to the settings.
+{% endcomment %}
+{{ 'esw-sections.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign store_rating = shop.metafields.esw.store_rating.value | default: section.settings.rating
+  assign review_count = shop.metafields.esw.review_count.value | default: section.settings.review_count
+-%}
+
+<div class="esw-trust color-{{ section.settings.color_scheme }} gradient">
+  <ul class="esw-trust__list page-width list-unstyled" role="list">
+    {%- if store_rating != blank and review_count != blank -%}
+      <li class="esw-trust__item esw-trust__item--rating">
+        <span aria-hidden="true">★</span>
+        {{ store_rating }}
+        <span class="esw-trust__muted">({{ 'esw.product.reviews_count.other' | t: count: review_count }})</span>
+      </li>
+    {%- endif -%}
+    {%- for block in section.blocks -%}
+      <li class="esw-trust__item" {{ block.shopify_attributes }}>
+        {%- if block.settings.link != blank -%}
+          <a href="{{ block.settings.link }}">{{ block.settings.text | escape }}</a>
+        {%- else -%}
+          {{ block.settings.text | escape }}
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "ESW: trust strip",
+  "class": "section",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "text",
+      "id": "rating",
+      "label": "Fallback rating",
+      "default": "4.8",
+      "info": "Used only when the shop metafield esw.store_rating is empty."
+    },
+    {
+      "type": "text",
+      "id": "review_count",
+      "label": "Fallback review count",
+      "default": "1,934",
+      "info": "Used only when the shop metafield esw.review_count is empty."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Proof point",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Made in Korea"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ESW: trust strip",
+      "blocks": [
+        { "type": "item", "settings": { "text": "Made in Korea" } },
+        { "type": "item", "settings": { "text": "Vegan + cruelty-free" } },
+        { "type": "item", "settings": { "text": "Also at Target" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

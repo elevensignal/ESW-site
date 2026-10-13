@@ -1,0 +1,68 @@
+{% comment %}
+  "Complete the routine" (SPEC 5.3 #7). Fixed pairing from the esw.routine_pair
+  product metafield, combined price and one "Add both" button.
+
+  Accepts:
+  - product: {Object}
+  - section_id: {String}
+
+  Usage:
+  {% render 'esw-routine-pair', product: product, section_id: section.id %}
+{% endcomment %}
+{%- liquid
+  assign pair = product.metafields.esw.routine_pair.value
+  assign variant = product.selected_or_first_available_variant
+  assign pair_variant = pair.selected_or_first_available_variant
+-%}
+{%- if pair and pair.available and variant.available and pair.id != product.id -%}
+  {%- assign combined = variant.price | plus: pair_variant.price | money -%}
+  <variant-refresh id="RoutinePair-{{ section_id }}" data-section="{{ section_id }}" class="esw-routine">
+    <h2 class="esw-routine__heading h4">{{ 'esw.product.complete_routine' | t }}</h2>
+    <div class="esw-routine__items">
+      {%- for item in (1..2) -%}
+        {%- liquid
+          if forloop.first
+            assign p = product
+          else
+            assign p = pair
+          endif
+          assign img = p.featured_media.preview_image
+        -%}
+        <div class="esw-routine__item">
+          <span class="esw-routine__media">
+            {%- if img -%}
+              {{
+                img
+                | image_url: width: 160
+                | image_tag:
+                  widths: '80, 160',
+                  sizes: '80px',
+                  loading: 'lazy',
+                  alt: ''
+              }}
+            {%- endif -%}
+          </span>
+          {%- if forloop.first -%}
+            <span class="esw-routine__title">{{ p.title | escape }}</span>
+          {%- else -%}
+            <a class="esw-routine__title" href="{{ p.url }}">{{ p.title | escape }}</a>
+          {%- endif -%}
+        </div>
+        {%- if forloop.first -%}
+          <span class="esw-routine__plus" aria-hidden="true">+</span>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    <add-items-button
+      class="esw-routine__action"
+      data-items="{{ variant.id | prepend: '[{"id":' | append: ',"quantity":1},{"id":' | append: pair_variant.id | append: ',"quantity":1}]' | escape }}"
+    >
+      <p class="esw-routine__total">{{ 'esw.product.together' | t: price: combined }}</p>
+      <button type="button" class="button button--secondary button--full-width">
+        <span>{{ 'esw.product.add_both' | t }}</span>
+        {%- render 'loading-spinner' -%}
+      </button>
+      <p class="esw-routine__error" role="alert" hidden></p>
+    </add-items-button>
+  </variant-refresh>
+{%- endif -%}

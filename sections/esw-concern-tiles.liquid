@@ -1,0 +1,103 @@
+{% comment %}
+  Shop by concern (SPEC 5.2 #4): color tiles linking to the concern hubs, each
+  with a one-line ingredient hint. Text-only tiles, so nothing to load.
+{% endcomment %}
+{{ 'esw-sections.css' | asset_url | stylesheet_tag }}
+
+<div class="esw-tiles-section color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="esw-section-head">
+        <h2>{{ section.settings.heading | escape }}</h2>
+      </div>
+    {%- endif -%}
+    <ul class="esw-tiles list-unstyled" role="list">
+      {%- for block in section.blocks -%}
+        <li class="esw-tile color-{{ block.settings.color_scheme }}" {{ block.shopify_attributes }}>
+          {%- if block.settings.link != blank -%}
+            <a class="esw-tile__link" href="{{ block.settings.link }}">
+          {%- else -%}
+            <div class="esw-tile__link">
+          {%- endif -%}
+          <span class="esw-tile__title h4">{{ block.settings.title | escape }}</span>
+          {%- if block.settings.hint != blank -%}
+            <span class="esw-tile__hint">{{ block.settings.hint | escape }}</span>
+          {%- endif -%}
+          {%- if block.settings.link != blank -%}
+            </a>
+          {%- else -%}
+            </div>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "ESW: concern tiles",
+  "class": "section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop by concern"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Concern",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Concern",
+          "default": "Dry skin"
+        },
+        {
+          "type": "text",
+          "id": "hint",
+          "label": "Ingredient hint",
+          "default": "Hyaluronic acid + PDRN"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "The concern hub page. The label must match where it goes (SPEC 10)."
+        },
+        {
+          "type": "color_scheme",
+          "id": "color_scheme",
+          "label": "Tile color",
+          "default": "scheme-5",
+          "info": "Peach (scheme 4) for masks, Aqua (scheme 5) for skincare."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ESW: concern tiles",
+      "blocks": [
+        { "type": "tile", "settings": { "title": "Dry skin", "hint": "Hyaluronic acid + PDRN", "color_scheme": "scheme-5" } },
+        { "type": "tile", "settings": { "title": "Breakouts + oil", "hint": "Centella + niacinamide", "color_scheme": "scheme-4" } },
+        { "type": "tile", "settings": { "title": "Sensitive + red", "hint": "Centella + heartleaf", "color_scheme": "scheme-5" } },
+        { "type": "tile", "settings": { "title": "Dull + uneven", "hint": "Vitamin C + niacinamide", "color_scheme": "scheme-4" } },
+        { "type": "tile", "settings": { "title": "Tired eyes", "hint": "Caffeine eye patches", "color_scheme": "scheme-5" } },
+        { "type": "tile", "settings": { "title": "Dry lips", "hint": "Smoothie lip treatments", "color_scheme": "scheme-4" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

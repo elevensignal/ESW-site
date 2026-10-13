@@ -37,29 +37,31 @@
   -%}
   <product-component view-event-payload="{{ card_product | standard_event_data: 'view', context: product_view_context | escape }}">
     <article class="esw-card" aria-labelledby="CardTitle-{{ card_id }}">
-      <a href="{{ card_product.url }}" class="esw-card__media" tabindex="-1" aria-hidden="true">
-        {%- if image -%}
-          {%- liquid
-            assign loading = 'lazy'
-            if lazy_load == false
-              assign loading = 'eager'
-            endif
-          -%}
-          {{
-            image
-            | image_url: width: 720
-            | image_tag:
-              widths: '180, 270, 360, 540, 720',
-              sizes: '(min-width: 990px) 280px, (min-width: 750px) 33vw, 50vw',
-              alt: image_alt,
-              loading: loading,
-              class: 'esw-card__image'
-          }}
-        {%- else -%}
-          {{ 'product-1' | placeholder_svg_tag: 'esw-card__image placeholder-svg' }}
-        {%- endif -%}
+      <div class="esw-card__media">
+        <a href="{{ card_product.url }}" class="esw-card__media-link" tabindex="-1" aria-hidden="true">
+          {%- if image -%}
+            {%- liquid
+              assign loading = 'lazy'
+              if lazy_load == false
+                assign loading = 'eager'
+              endif
+            -%}
+            {{
+              image
+              | image_url: width: 720
+              | image_tag:
+                widths: '180, 270, 360, 540, 720',
+                sizes: '(min-width: 990px) 280px, (min-width: 750px) 33vw, 50vw',
+                alt: image_alt,
+                loading: loading,
+                class: 'esw-card__image'
+            }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'esw-card__image placeholder-svg' }}
+          {%- endif -%}
+        </a>
         {% render 'esw-badges', product: card_product %}
-      </a>
+      </div>
 
       <div class="esw-card__body">
         {% render 'esw-rating', product: card_product %}

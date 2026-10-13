@@ -1,0 +1,78 @@
+{% comment %}
+  Founder note (SPEC 5.2 #9): two lines plus a link to Our story.
+{% endcomment %}
+{{ 'esw-sections.css' | asset_url | stylesheet_tag }}
+
+<div class="esw-founder color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width esw-founder__inner">
+    {%- if section.settings.image != blank -%}
+      {{
+        section.settings.image
+        | image_url: width: 240
+        | image_tag:
+          widths: '120, 240',
+          sizes: '120px',
+          loading: 'lazy',
+          alt: section.settings.image.alt,
+          class: 'esw-founder__image'
+      }}
+    {%- endif -%}
+    <div>
+      {%- if section.settings.heading != blank -%}
+        <h2 class="h3">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      <div class="esw-founder__text rte">{{ section.settings.text }}</div>
+      {%- if section.settings.link != blank and section.settings.link_label != blank -%}
+        <a class="esw-founder__link link" href="{{ section.settings.link }}">{{ section.settings.link_label | escape }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "ESW: founder note",
+  "class": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Portrait"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "A note from our founder"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>I started ESW in 2019 to make Korean skincare simple: a few products that work together, made with clean, vegan formulas. — Elina Sofia Wang</p>"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "Read our story"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "ESW: founder note"
+    }
+  ]
+}
+{% endschema %}

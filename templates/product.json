@@ -1,17 +1,22 @@
 {
   "sections": {
+    "breadcrumb": {
+      "type": "esw-breadcrumb",
+      "settings": {
+        "skip_handles": "all, frontpage, bestsellers, new-in, value-sets"
+      }
+    },
     "main": {
       "type": "main-product",
       "blocks": {
-        "vendor": {
-          "type": "text",
-          "settings": {
-            "text": "{{ product.vendor }}",
-            "text_style": "uppercase"
-          }
+        "rating": {
+          "type": "esw_rating"
         },
         "title": {
           "type": "title"
+        },
+        "best_for": {
+          "type": "esw_best_for"
         },
         "price": {
           "type": "price"
@@ -23,57 +28,107 @@
             "swatch_shape": "circle"
           }
         },
+        "purchase_options": {
+          "type": "esw_purchase_options",
+          "settings": {
+            "subscribe_default_types": "Face Mask, Facial Mist, Eye Patches"
+          }
+        },
         "quantity_selector": {
           "type": "quantity_selector"
         },
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
-            "show_dynamic_checkout": true,
+            "show_dynamic_checkout": false,
             "show_gift_card_recipient": true
           }
+        },
+        "shipping_bar": {
+          "type": "esw_shipping_bar"
+        },
+        "routine_pair": {
+          "type": "esw_routine_pair"
         },
         "description": {
           "type": "description"
         },
-        "share": {
-          "type": "share",
-          "settings": {
-            "share_label": "Share"
-          }
+        "sticky_atc": {
+          "type": "esw_sticky_atc"
         }
       },
       "block_order": [
-        "vendor",
+        "rating",
         "title",
+        "best_for",
         "price",
         "variant_picker",
+        "purchase_options",
         "quantity_selector",
         "buy_buttons",
+        "shipping_bar",
+        "routine_pair",
         "description",
-        "share"
+        "sticky_atc"
       ],
       "settings": {
         "enable_sticky_info": true,
         "color_scheme": "scheme-1",
         "media_position": "left",
-        "gallery_layout": "stacked",
+        "gallery_layout": "thumbnail_slider",
         "media_size": "large",
         "constrain_to_viewport": true,
-        "media_fit": "contain",
+        "media_fit": "cover",
         "image_zoom": "lightbox",
         "mobile_thumbnails": "hide",
         "hide_variants": true,
         "enable_video_looping": false,
-        "padding_top": 36,
-        "padding_bottom": 12
+        "padding_top": 12,
+        "padding_bottom": 36
       }
     },
-    "disclosures": {
-      "type": "disclosures",
+    "details": {
+      "type": "esw-product-details",
+      "blocks": {
+        "ingredients": {
+          "type": "ingredients"
+        },
+        "how_to": {
+          "type": "how_to"
+        },
+        "faq": {
+          "type": "faq"
+        }
+      },
+      "block_order": [
+        "ingredients",
+        "how_to",
+        "faq"
+      ],
       "settings": {
-        "padding_top": 36,
-        "padding_bottom": 0
+        "color_scheme": "scheme-1"
+      }
+    },
+    "reviews": {
+      "type": "esw-app-slot",
+      "settings": {
+        "heading": "Reviews",
+        "anchor": "reviews",
+        "link_label": "",
+        "link": "",
+        "empty_note": "Add the Yotpo Reviews app block here.",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "creator_videos": {
+      "type": "esw-app-slot",
+      "settings": {
+        "heading": "See it on real skin",
+        "anchor": "creator-videos",
+        "link_label": "",
+        "link": "",
+        "empty_note": "Add the Tolstoy app block here.",
+        "color_scheme": "scheme-1"
       }
     },
     "related-products": {
@@ -86,7 +141,7 @@
         "color_scheme": "scheme-1",
         "image_ratio": "square",
         "image_shape": "default",
-        "show_secondary_image": true,
+        "show_secondary_image": false,
         "show_vendor": false,
         "show_rating": false,
         "columns_mobile": "2",
@@ -96,8 +151,11 @@
     }
   },
   "order": [
+    "breadcrumb",
     "main",
-    "disclosures",
+    "details",
+    "reviews",
+    "creator_videos",
     "related-products"
   ]
 }

@@ -181,4 +181,67 @@
       }
     );
   }
+  /*
+   * <variant-refresh id="..." data-section="{{ section.id }}">
+   * Re-renders its contents from the section HTML that Dawn's product-info
+   * fetches on every variant change, keeping any choices the shopper made.
+   */
+  if (!customElements.get('variant-refresh')) {
+    customElements.define(
+      'variant-refresh',
+      class VariantRefresh extends HTMLElement {
+        connectedCallback() {
+          if (typeof subscribe !== 'function') return;
+          this.unsubscribe = subscribe(PUB_SUB_EVENTS.variantChange, ({ data }) => {
+            if (data.sectionId !== this.dataset.section) return;
+            const fresh = data.html.getElementById(this.id);
+            if (!fresh) return;
+
+            const choices = [...this.querySelectorAll('input:checked, select')].map((el) => [el.name, el.value]);
+            this.innerHTML = fresh.innerHTML;
+            choices.forEach(([name, value]) => {
+              const field = this.querySelector(`[name="${name}"]`);
+              if (field?.tagName === 'SELECT') field.value = value;
+              const radio = this.querySelector(`input[name="${name}"][value="${CSS.escape(value)}"]`);
+              if (radio) radio.checked = true;
+            });
+            this.dispatchEvent(new Event('change', { bubbles: true }));
+          });
+        }
+
+        disconnectedCallback() {
+          this.unsubscribe?.();
+        }
+      }
+    );
+  }
+
+  /*
+   * <purchase-options>
+   * Subscribe-and-save vs one-time. Writes the chosen plan into a hidden
+   * selling_plan input that belongs to the product form (form="...").
+   */
+  if (!customElements.get('purchase-options')) {
+    customElements.define(
+      'purchase-options',
+      class PurchaseOptions extends HTMLElement {
+        connectedCallback() {
+          this.addEventListener('change', () => this.sync());
+          this.sync();
+        }
+
+        sync() {
+          const input = this.querySelector('input[name="selling_plan"]');
+          const subscribe = this.querySelector('input[name="purchase_type"][value="subscribe"]');
+          const frequency = this.querySelector('[data-frequency]');
+          if (!input || !subscribe) return;
+
+          const isSubscription = subscribe.checked;
+          input.disabled = !isSubscription;
+          input.value = isSubscription ? frequency?.value || input.value : '';
+          if (frequency) frequency.disabled = !isSubscription;
+        }
+      }
+    );
+  }
 })();

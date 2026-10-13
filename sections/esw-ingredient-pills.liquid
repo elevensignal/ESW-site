@@ -1,0 +1,78 @@
+{% comment %}
+  Shop by ingredient (SPEC 5.2 #8): pill links to the ingredient hubs.
+{% endcomment %}
+{{ 'esw-sections.css' | asset_url | stylesheet_tag }}
+
+<div class="esw-pills-section color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="esw-section-head">
+        <h2>{{ section.settings.heading | escape }}</h2>
+      </div>
+    {%- endif -%}
+    <ul class="esw-pills list-unstyled" role="list">
+      {%- for block in section.blocks -%}
+        {%- if block.settings.link != blank -%}
+          <li {{ block.shopify_attributes }}>
+            <a class="esw-pill" href="{{ block.settings.link }}">{{ block.settings.label | escape }}</a>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "ESW: ingredient pills",
+  "class": "section",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop by ingredient"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "pill",
+      "name": "Ingredient",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "PDRN"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "The ingredient hub page. Pills without a link are hidden."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ESW: ingredient pills",
+      "blocks": [
+        { "type": "pill", "settings": { "label": "PDRN" } },
+        { "type": "pill", "settings": { "label": "Centella (cica)" } },
+        { "type": "pill", "settings": { "label": "Niacinamide" } },
+        { "type": "pill", "settings": { "label": "Hyaluronic acid" } },
+        { "type": "pill", "settings": { "label": "Vitamin C" } },
+        { "type": "pill", "settings": { "label": "Heartleaf" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

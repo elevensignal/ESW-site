@@ -6,7 +6,7 @@
   {% render 'esw-badges', product: product %}
 {% endcomment %}
 {%- liquid
-  assign badge = blank
+  assign badge = nil
   if product.tags contains 'badge:new'
     assign badge = 'new'
     assign label = 'esw.badges.new' | t
@@ -18,6 +18,6 @@
     assign label = 'esw.badges.set' | t
   endif
 -%}
-{%- if badge != blank -%}
+{%- if badge -%}
   <span class="esw-badge esw-badge--{{ badge }}">{{ label }}</span>
 {%- endif -%}

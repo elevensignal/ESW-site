@@ -3797,6 +3797,7 @@ a.esw-rating:hover .esw-rating__count {
 
 /* Product card (SPEC 3.3) */
 .esw-card {
+  position: relative; /* contains Dawn's absolutely positioned visually-hidden labels inside scrollers */
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -3811,6 +3812,11 @@ a.esw-rating:hover .esw-rating__count {
   overflow: hidden;
   border-radius: var(--esw-radius-card);
   background: var(--color-border); /* sized placeholder while the image loads */
+}
+
+.esw-card__media-link {
+  display: block;
+  height: 100%;
 }
 
 .esw-card__image {
@@ -3929,4 +3935,59 @@ a.esw-rating:hover .esw-rating__count {
   color: inherit;
   font-weight: var(--font-body-weight-bold);
   white-space: nowrap;
+}
+
+/* Cart drawer: free-shipping progress and one upsell row (SPEC 5.6) */
+.esw-drawer-shipping {
+  padding: 0 1.5rem 1.2rem;
+}
+
+@media screen and (min-width: 750px) {
+  .esw-drawer-shipping {
+    padding-inline: 3rem;
+  }
+}
+
+.esw-upsell {
+  flex-shrink: 0;
+  padding: 1.2rem 1.5rem;
+  border-top: 0.1rem solid var(--color-border);
+}
+
+.esw-upsell__heading {
+  margin: 0 0 0.8rem;
+  font-family: var(--font-body-family);
+  font-weight: var(--font-body-weight-bold);
+  font-size: 1.4rem;
+}
+
+.esw-upsell__row {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.esw-upsell__image {
+  flex: 0 0 auto;
+  width: 6.4rem;
+  height: 6.4rem;
+  border-radius: 1.2rem;
+  object-fit: cover;
+  background: var(--color-border);
+}
+
+.esw-upsell__info {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  font-size: 1.4rem;
+}
+
+.esw-upsell__title {
+  color: var(--color-text);
+}
+
+.esw-upsell__button.button {
+  min-width: 0;
+  padding: 0 1.8rem;
 }

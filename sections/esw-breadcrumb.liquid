@@ -1,0 +1,55 @@
+{% comment %}
+  Breadcrumb: Home / Category / Product (SPEC 5.3 #1).
+  Uses the collection the shopper came from when the URL has one; otherwise the
+  product's first collection that is not a merchandising list (bestsellers, new-in...).
+{% endcomment %}
+{{ 'esw-sections.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign crumb_collection = collection
+  if crumb_collection == blank and product
+    assign skip_handles = section.settings.skip_handles | remove: ' ' | split: ','
+    for c in product.collections
+      unless skip_handles contains c.handle
+        assign crumb_collection = c
+        break
+      endunless
+    endfor
+  endif
+-%}
+
+<nav class="esw-breadcrumb page-width" aria-label="{{ 'esw.product.breadcrumb' | t }}">
+  <ol class="list-unstyled" role="list">
+    <li><a href="{{ routes.root_url }}">{{ 'esw.product.home' | t }}</a></li>
+    {%- if crumb_collection != blank -%}
+      <li><a href="{{ crumb_collection.url }}">{{ crumb_collection.title | escape }}</a></li>
+    {%- endif -%}
+    {%- if product -%}
+      <li><span aria-current="page">{{ product.title | escape }}</span></li>
+    {%- endif -%}
+  </ol>
+</nav>
+
+{% schema %}
+{
+  "name": "ESW: breadcrumb",
+  "class": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "skip_handles",
+      "label": "Collections never used as the category",
+      "default": "all, frontpage, bestsellers, new-in, value-sets",
+      "info": "Comma-separated collection handles."
+    }
+  ],
+  "presets": [
+    {
+      "name": "ESW: breadcrumb"
+    }
+  ]
+}
+{% endschema %}

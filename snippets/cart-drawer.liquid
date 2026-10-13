@@ -74,6 +74,12 @@
           </span>
         </button>
       </div>
+      {%- comment -%} ESW: free-shipping + gift progress, re-rendered with the drawer (SPEC 5.6). {%- endcomment -%}
+      {%- if cart != empty -%}
+        <div class="esw-drawer-shipping">
+          {% render 'esw-free-shipping-bar', static: true %}
+        </div>
+      {%- endif -%}
       <cart-drawer-items
         view-event-payload="{{ cart | standard_event_data: 'view', context: 'dialog' | escape }}"
         view-event-trigger="manual"
@@ -487,6 +493,10 @@
           <div id="CartDrawer-CartErrors" role="alert"></div>
         </form>
       </cart-drawer-items>
+      {%- comment -%} ESW: one upsell row (SPEC 5.6). {%- endcomment -%}
+      {%- if cart != empty -%}
+        {% render 'esw-cart-upsell' %}
+      {%- endif -%}
       <div class="drawer__footer">
         {%- if settings.show_cart_note -%}
           <details id="Details-CartDrawer">

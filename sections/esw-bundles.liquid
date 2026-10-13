@@ -1,0 +1,84 @@
+{% comment %}
+  Build your routine (SPEC 5.2 #6): three bundles on a Black Cherry band.
+  Cards sit on Oat Milk panels so the Black Cherry text stays readable.
+{% endcomment %}
+{{ 'esw-sections.css' | asset_url | stylesheet_tag }}
+{{ 'component-rating.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+<div class="esw-bundles color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    <div class="esw-section-head">
+      <div>
+        <h2>{{ section.settings.heading | escape }}</h2>
+        {%- if section.settings.subheading != blank -%}
+          <p class="esw-bundles__sub">{{ section.settings.subheading | escape }}</p>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.link != blank and section.settings.link_label != blank -%}
+        <a href="{{ section.settings.link }}">{{ section.settings.link_label | escape }}</a>
+      {%- endif -%}
+    </div>
+
+    <ul class="esw-bundles__list list-unstyled" role="list">
+      {%- for product in section.settings.products -%}
+        <li class="esw-bundles__item color-scheme-1">
+          {% render 'card-product', card_product: product, section_id: section.id, skip_styles: true %}
+        </li>
+      {%- else -%}
+        {%- for i in (1..3) -%}
+          <li class="esw-bundles__item color-scheme-1">{% render 'card-product', skip_styles: true %}</li>
+        {%- endfor -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "ESW: bundles band",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Build your routine"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Sets that pair the right steps, priced below buying each one."
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Bundles",
+      "limit": 3
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "All bundles + sets"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-2"
+    }
+  ],
+  "presets": [
+    {
+      "name": "ESW: bundles band"
+    }
+  ]
+}
+{% endschema %}

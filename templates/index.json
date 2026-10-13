@@ -1,75 +1,121 @@
 {
   "sections": {
-    "image_banner": {
-      "type": "image-banner",
-      "blocks": {
-        "heading": {
-          "type": "heading",
-          "settings": {
-            "heading": "Browse our latest products",
-            "heading_size": "h0"
-          }
-        },
-        "button": {
-          "type": "buttons",
-          "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
-          }
-        }
-      },
-      "block_order": [
-        "heading",
-        "button"
-      ],
+    "hero": {
+      "type": "esw-hero",
       "settings": {
-        "image_overlay_opacity": 40,
-        "image_height": "large",
-        "desktop_content_position": "bottom-center",
-        "show_text_box": false,
-        "image_behavior": "none",
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
+        "eyebrow": "",
+        "heading": "Korean skincare that works in one routine",
+        "subheading": "Masks, serums and lip treatments made in Korea. Vegan, cruelty-free and built to layer.",
+        "primary_label": "Shop routine bundles",
+        "primary_link": "shopify://collections/value-sets",
+        "secondary_label": "Take the 60-second skin quiz",
+        "secondary_link": "/pages/quiz",
+        "color_scheme": "scheme-1"
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
+    "trust": {
+      "type": "esw-trust-strip",
+      "blocks": {
+        "korea": { "type": "item", "settings": { "text": "Made in Korea", "link": "" } },
+        "vegan": { "type": "item", "settings": { "text": "Vegan + cruelty-free", "link": "" } },
+        "target": { "type": "item", "settings": { "text": "Also at Target", "link": "" } }
+      },
+      "block_order": ["korea", "vegan", "target"],
       "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
+        "rating": "4.8",
+        "review_count": "1,934",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "concerns": {
+      "type": "esw-concern-tiles",
+      "blocks": {
+        "dry": { "type": "tile", "settings": { "title": "Dry skin", "hint": "Hyaluronic acid + PDRN", "link": "/pages/dry-skin", "color_scheme": "scheme-5" } },
+        "breakouts": { "type": "tile", "settings": { "title": "Breakouts + oil", "hint": "Centella + niacinamide", "link": "/pages/breakouts-oil", "color_scheme": "scheme-4" } },
+        "sensitive": { "type": "tile", "settings": { "title": "Sensitive + red", "hint": "Centella + heartleaf", "link": "/pages/sensitive-red", "color_scheme": "scheme-5" } },
+        "dull": { "type": "tile", "settings": { "title": "Dull + uneven", "hint": "Vitamin C + niacinamide", "link": "/pages/dull-uneven", "color_scheme": "scheme-4" } },
+        "eyes": { "type": "tile", "settings": { "title": "Tired eyes", "hint": "Latte eye patches", "link": "/pages/tired-eyes", "color_scheme": "scheme-5" } },
+        "lips": { "type": "tile", "settings": { "title": "Dry lips", "hint": "Smoothie lip treatments", "link": "/pages/dry-lips", "color_scheme": "scheme-4" } }
+      },
+      "block_order": ["dry", "breakouts", "sensitive", "dull", "eyes", "lips"],
+      "settings": {
+        "heading": "Shop by concern",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "bestsellers": {
+      "type": "esw-product-grid",
+      "settings": {
+        "heading": "Bestsellers",
+        "collection": "bestsellers",
+        "limit": 4,
+        "link_label": "Shop all bestsellers",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "bundles": {
+      "type": "esw-bundles",
+      "settings": {
+        "heading": "Build your routine",
+        "subheading": "Sets that pair the right steps, priced below buying each one.",
+        "products": [],
+        "link_label": "All bundles + sets",
+        "link": "shopify://collections/value-sets",
+        "color_scheme": "scheme-2"
+      }
+    },
+    "tiktok": {
+      "type": "esw-app-slot",
+      "settings": {
+        "heading": "As seen on TikTok",
+        "anchor": "tiktok",
+        "link_label": "",
+        "link": "",
+        "empty_note": "Add the Tolstoy app block here (one row of shoppable creator videos).",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "ingredients": {
+      "type": "esw-ingredient-pills",
+      "blocks": {
+        "pdrn": { "type": "pill", "settings": { "label": "PDRN", "link": "/pages/pdrn" } },
+        "centella": { "type": "pill", "settings": { "label": "Centella (cica)", "link": "/pages/centella" } },
+        "niacinamide": { "type": "pill", "settings": { "label": "Niacinamide", "link": "/pages/niacinamide" } },
+        "hyaluronic": { "type": "pill", "settings": { "label": "Hyaluronic acid", "link": "/pages/hyaluronic-acid" } },
+        "vitamin_c": { "type": "pill", "settings": { "label": "Vitamin C", "link": "/pages/vitamin-c" } },
+        "heartleaf": { "type": "pill", "settings": { "label": "Heartleaf", "link": "/pages/heartleaf" } }
+      },
+      "block_order": ["pdrn", "centella", "niacinamide", "hyaluronic", "vitamin_c", "heartleaf"],
+      "settings": {
+        "heading": "Shop by ingredient",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "founder": {
+      "type": "esw-founder-note",
+      "settings": {
+        "heading": "A note from our founder",
+        "text": "<p>I started ESW in 2019 to make Korean skincare simple: a few products that work together, made with clean, vegan formulas. — Elina Sofia Wang</p>",
+        "link_label": "Read our story",
+        "link": "/pages/our-story",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "email": {
+      "type": "newsletter",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "heading": "Get skin tips and first dibs on drops", "heading_size": "h2" } },
+        "text": { "type": "paragraph", "settings": { "text": "<p>One email a week. Unsubscribe anytime.</p>" } },
+        "form": { "type": "email_form" }
+      },
+      "block_order": ["heading", "text", "form"],
+      "settings": {
         "color_scheme": "scheme-1",
         "full_width": false,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
-        "columns_mobile": "2",
-        "padding_top": 44,
-        "padding_bottom": 36
+        "padding_top": 36,
+        "padding_bottom": 48
       }
     }
   },
-  "order": [
-    "image_banner",
-    "featured_collection"
-  ]
+  "order": ["hero", "trust", "concerns", "bestsellers", "bundles", "tiktok", "ingredients", "founder", "email"]
 }

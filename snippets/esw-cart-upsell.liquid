@@ -1,0 +1,71 @@
+{% comment %}
+  One upsell row in the cart drawer (SPEC 5.6). Uses the routine pairing of the
+  first cart item that has one (esw.routine_pair), else the theme setting
+  cart_upsell_product. Skips anything already in the cart or sold out.
+
+  Usage:
+  {% render 'esw-cart-upsell' %}
+{% endcomment %}
+{%- liquid
+  assign in_cart = cart.items | map: 'product_id'
+  assign upsell = nil
+
+  for item in cart.items
+    assign candidate = item.product.metafields.esw.routine_pair.value
+    if candidate and candidate.available
+      unless in_cart contains candidate.id
+        assign upsell = candidate
+        break
+      endunless
+    endif
+  endfor
+
+  if upsell == nil and settings.cart_upsell_product != blank
+    assign candidate = settings.cart_upsell_product
+    if candidate.available
+      unless in_cart contains candidate.id
+        assign upsell = candidate
+      endunless
+    endif
+  endif
+-%}
+{%- if upsell -%}
+  {%- assign upsell_variant = upsell.selected_or_first_available_variant -%}
+  <div class="esw-upsell">
+    <h3 class="esw-upsell__heading">{{ 'esw.cart.upsell_heading' | t }}</h3>
+    <div class="esw-upsell__row">
+      {%- if upsell.featured_media -%}
+        {{
+          upsell.featured_media.preview_image
+          | image_url: width: 128
+          | image_tag: widths: '64, 128', sizes: '64px', loading: 'lazy', alt: '', class: 'esw-upsell__image'
+        }}
+      {%- endif -%}
+      <div class="esw-upsell__info">
+        <a class="esw-upsell__title" href="{{ upsell.url }}">{{ upsell.title | escape }}</a>
+        <span class="esw-upsell__price">{{ upsell_variant.price | money }}</span>
+      </div>
+      {%- if upsell.has_only_default_variant -%}
+        {%- assign upsell_form_id = 'CartUpsell-' | append: upsell.id -%}
+        <product-form data-hide-errors="true">
+          {%- form 'product', upsell, id: upsell_form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+            <input type="hidden" name="id" value="{{ upsell_variant.id }}">
+            <button
+              type="submit"
+              name="add"
+              class="button button--secondary esw-upsell__button"
+              aria-label="{{ 'esw.cart.add' | t }}: {{ upsell.title | escape }}"
+            >
+              <span>{{ 'esw.cart.add' | t }}</span>
+              {%- render 'loading-spinner' -%}
+            </button>
+          {%- endform -%}
+        </product-form>
+      {%- else -%}
+        <a class="button button--secondary esw-upsell__button" href="{{ upsell.url }}">
+          {{- 'esw.product.choose_options' | t -}}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}

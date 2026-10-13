@@ -39,8 +39,8 @@
     }
   {%- endstyle -%}
 
+  {{ 'esw-sections.css' | asset_url | stylesheet_tag }}
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
-  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
   {%- if product.quantity_price_breaks_configured? -%}
     <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
@@ -688,6 +688,75 @@
                   </product-recommendations>
                 {%- when 'icon-with-text' -%}
                   {% render 'icon-with-text', block: block %}
+                {%- comment -%} ESW blocks (SPEC 5.3) {%- endcomment -%}
+                {%- when 'esw_rating' -%}
+                  <div class="esw-pdp-rating" {{ block.shopify_attributes }}>
+                    {% render 'esw-rating', product: product, link: '#reviews' %}
+                  </div>
+                {%- when 'esw_best_for' -%}
+                  {%- assign best_for = product.metafields.esw.best_for.value -%}
+                  {%- assign attributes = product.metafields.esw.attributes.value -%}
+                  {%- if best_for != blank or attributes != blank -%}
+                    <div class="esw-best-for" {{ block.shopify_attributes }}>
+                      {%- if best_for != blank -%}
+                        <p class="esw-best-for__text">{{ 'esw.product.best_for' | t: text: best_for }}</p>
+                      {%- endif -%}
+                      {%- if attributes != blank -%}
+                        <ul class="esw-chips list-unstyled" role="list">
+                          {%- for attribute in attributes limit: 3 -%}
+                            <li class="esw-chip">{{ attribute | escape }}</li>
+                          {%- endfor -%}
+                        </ul>
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+                {%- when 'esw_purchase_options' -%}
+                  <div {{ block.shopify_attributes }}>
+                    {% render 'esw-purchase-options',
+                      product: product,
+                      product_form_id: product_form_id,
+                      section_id: section.id,
+                      default_types: block.settings.subscribe_default_types
+                    %}
+                  </div>
+                {%- when 'esw_shipping_bar' -%}
+                  <div class="esw-pdp-shipping" {{ block.shopify_attributes }}>
+                    {% render 'esw-free-shipping-bar' %}
+                  </div>
+                {%- when 'esw_routine_pair' -%}
+                  <div {{ block.shopify_attributes }}>
+                    {% render 'esw-routine-pair', product: product, section_id: section.id %}
+                  </div>
+                {%- when 'esw_sticky_atc' -%}
+                  {%- assign sticky_variant = product.selected_or_first_available_variant -%}
+                  <sticky-atc
+                    class="esw-sticky-atc color-scheme-1"
+                    data-target="ProductSubmitButton-{{ section.id }}"
+                    data-section="{{ section.id }}"
+                    role="region"
+                    aria-label="{{ 'esw.product.sticky_label' | t }}"
+                    {{ block.shopify_attributes }}
+                  >
+                    <div class="esw-sticky-atc__info">
+                      <span class="esw-sticky-atc__title">{{ product.title | escape }}</span>
+                      <span class="esw-sticky-atc__price" data-price>{{ sticky_variant.price | money }}</span>
+                    </div>
+                    <button
+                      type="button"
+                      class="button button--primary"
+                      {% unless sticky_variant.available %}
+                        disabled
+                      {% endunless %}
+                    >
+                      <span>
+                        {%- if sticky_variant.available -%}
+                          {{ 'products.product.add_to_cart' | t }}
+                        {%- else -%}
+                          {{ 'products.product.sold_out' | t }}
+                        {%- endif -%}
+                      </span>
+                    </button>
+                  </sticky-atc>
               {%- endcase -%}
             {%- endfor -%}
             <a href="{{ product.url }}" class="link product__view-details animate-arrow">
@@ -2142,6 +2211,75 @@
           "default": "t:sections.main-product.blocks.icon_with_text.settings.heading_3.default",
           "label": "t:sections.main-product.blocks.icon_with_text.settings.heading_3.label",
           "info": "t:sections.main-product.blocks.icon_with_text.settings.heading.info"
+        }
+      ]
+    },
+    {
+      "type": "esw_rating",
+      "name": "ESW: rating",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Stars and review count from the reviews.rating / reviews.rating_count metafields (synced by Yotpo). Links to the reviews section."
+        }
+      ]
+    },
+    {
+      "type": "esw_best_for",
+      "name": "ESW: best for + chips",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Reads esw.best_for and the first 3 values of esw.attributes."
+        }
+      ]
+    },
+    {
+      "type": "esw_purchase_options",
+      "name": "ESW: purchase options",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "subscribe_default_types",
+          "label": "Default to subscribe for product types",
+          "default": "Face Mask, Facial Mist, Eye Patches",
+          "info": "Comma-separated product types. The tag default:subscribe also works. Needs a subscription app that uses selling plans."
+        }
+      ]
+    },
+    {
+      "type": "esw_shipping_bar",
+      "name": "ESW: free-shipping progress",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Threshold comes from Theme settings > ESW Beauty."
+        }
+      ]
+    },
+    {
+      "type": "esw_routine_pair",
+      "name": "ESW: complete the routine",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Pairs with the product in the esw.routine_pair metafield."
+        }
+      ]
+    },
+    {
+      "type": "esw_sticky_atc",
+      "name": "ESW: sticky add to cart",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Mobile only. Appears once the main add-to-cart button scrolls out of view."
         }
       ]
     }

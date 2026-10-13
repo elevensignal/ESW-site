@@ -1,0 +1,118 @@
+{% comment %}
+  Static homepage hero (SPEC 5.2 #2). One image, the page's only H1, two buttons.
+  The image is never lazy-loaded: it is preloaded with fetchpriority="high" (SPEC 8).
+{% endcomment %}
+{{ 'esw-sections.css' | asset_url | stylesheet_tag }}
+
+<div class="esw-hero color-{{ section.settings.color_scheme }} gradient">
+  <div class="esw-hero__inner page-width">
+    <div class="esw-hero__media">
+      {%- if section.settings.image != blank -%}
+        {{
+          section.settings.image
+          | image_url: width: 1500
+          | image_tag:
+            widths: '390, 600, 780, 1000, 1200, 1500',
+            sizes: '(min-width: 990px) 600px, 100vw',
+            preload: true,
+            fetchpriority: 'high',
+            loading: 'eager',
+            alt: section.settings.image.alt,
+            class: 'esw-hero__image'
+        }}
+      {%- else -%}
+        {{ 'hero-apparel-1' | placeholder_svg_tag: 'esw-hero__image placeholder-svg' }}
+      {%- endif -%}
+    </div>
+    <div class="esw-hero__content">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="esw-hero__eyebrow esw-meta">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h1 class="esw-hero__heading">{{ section.settings.heading | escape }}</h1>
+      {%- if section.settings.subheading != blank -%}
+        <p class="esw-hero__subheading">{{ section.settings.subheading | escape }}</p>
+      {%- endif -%}
+      <div class="esw-hero__buttons">
+        {%- if section.settings.primary_label != blank -%}
+          <a class="button button--primary" href="{{ section.settings.primary_link | default: routes.all_products_collection_url }}">
+            {{- section.settings.primary_label | escape -}}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.secondary_label != blank -%}
+          <a class="button button--secondary" href="{{ section.settings.secondary_link | default: routes.root_url }}">
+            {{- section.settings.secondary_label | escape -}}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "ESW: hero",
+  "class": "section",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["index"]
+  },
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "The routine bundle. Square or 4:5 works best."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading (the page's H1)",
+      "default": "Korean skincare that works in one routine"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Masks, serums and lip treatments made in Korea. Vegan, cruelty-free and built to layer."
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "Shop routine bundles"
+    },
+    {
+      "type": "url",
+      "id": "primary_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "Take the 60-second skin quiz"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "ESW: hero"
+    }
+  ]
+}
+{% endschema %}

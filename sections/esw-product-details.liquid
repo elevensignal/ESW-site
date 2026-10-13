@@ -1,0 +1,111 @@
+{% comment %}
+  PDP content from metafields (SPEC 5.3 #8-10, SPEC 11):
+  - esw.key_ingredients (JSON): [{"name": "PDRN", "benefit": "Supports skin repair"}]
+  - esw.how_to_use (list of single line text)
+  - esw.faq (JSON): [{"q": "Can I use it daily?", "a": "Yes..."}], also output as FAQPage schema
+  Each block renders nothing when its metafield is empty.
+{% endcomment %}
+{{ 'esw-sections.css' | asset_url | stylesheet_tag }}
+
+<div class="esw-details color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width esw-details__inner">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'ingredients' -%}
+          {%- assign ingredients = product.metafields.esw.key_ingredients.value -%}
+          {%- if ingredients != blank -%}
+            <div class="esw-details__block" {{ block.shopify_attributes }}>
+              <h2 class="h3">{{ 'esw.product.key_ingredients' | t }}</h2>
+              <ul class="esw-ingredients list-unstyled" role="list">
+                {%- for ingredient in ingredients limit: 4 -%}
+                  <li class="esw-ingredients__item">
+                    <h3 class="esw-ingredients__name">{{ ingredient.name | escape }}</h3>
+                    <p class="esw-ingredients__benefit">{{ ingredient.benefit | escape }}</p>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        {%- when 'how_to' -%}
+          {%- assign steps = product.metafields.esw.how_to_use.value -%}
+          {%- if steps != blank -%}
+            <div class="esw-details__block" {{ block.shopify_attributes }}>
+              <h2 class="h3">{{ 'esw.product.how_to_use' | t }}</h2>
+              <ol class="esw-steps" role="list">
+                {%- for step in steps -%}
+                  <li>{{ step | escape }}</li>
+                {%- endfor -%}
+              </ol>
+            </div>
+          {%- endif -%}
+        {%- when 'faq' -%}
+          {%- assign faqs = product.metafields.esw.faq.value -%}
+          {%- if faqs != blank -%}
+            <div class="esw-details__block esw-details__block--wide" {{ block.shopify_attributes }}>
+              <h2 class="h3">{{ 'esw.product.faq' | t }}</h2>
+              {% render 'esw-faq', faqs: faqs %}
+            </div>
+          {%- endif -%}
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "ESW: product details",
+  "class": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "ingredients",
+      "name": "Key ingredients",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "2×2 grid from the esw.key_ingredients metafield."
+        }
+      ]
+    },
+    {
+      "type": "how_to",
+      "name": "How to use",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Numbered steps from the esw.how_to_use metafield."
+        }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "FAQ",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Accordion from the esw.faq metafield, also output as FAQPage schema."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ESW: product details",
+      "blocks": [{ "type": "ingredients" }, { "type": "how_to" }, { "type": "faq" }]
+    }
+  ]
+}
+{% endschema %}
